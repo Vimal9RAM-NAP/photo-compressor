@@ -1,8 +1,6 @@
-
 let loadedFiles = [];
 let activeIndex = 0;
 let compressedBlobs = [];
-
 
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
@@ -14,17 +12,26 @@ const scaleSelect = document.getElementById('scaleSelect');
 const origSizeEl = document.getElementById('origSize');
 const compSizeEl = document.getElementById('compSize');
 const savedRatioEl = document.getElementById('savedRatio');
+
 const downloadSingleBtn = document.getElementById('downloadSingleBtn');
+const downloadZipBtn = document.getElementById('downloadZipBtn');
 
+const placeholderText = document.querySelector('.placeholder-text');
+const splitWrapper = document.getElementById('splitWrapper');
+const imgOriginal = document.getElementById('imgOriginal');
+const imgCompressed = document.getElementById('imgCompressed');
+const compressedWrapper = document.getElementById('compressedWrapper');
+const splitSlider = document.getElementById('splitSlider');
 
-dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('click', (e) => {
+  if (e.target !== fileInput) fileInput.click();
+});
 
 fileInput.addEventListener('change', (e) => {
   if (e.target.files.length > 0) {
     handleFiles(Array.from(e.target.files));
   }
 });
-
 
 dropZone.addEventListener('dragover', (e) => {
   e.preventDefault();
@@ -42,7 +49,6 @@ dropZone.addEventListener('drop', (e) => {
   }
 });
 
-
 qualitySlider.addEventListener('input', (e) => {
   qualityVal.textContent = e.target.value;
   processCurrentImage();
@@ -51,17 +57,50 @@ qualitySlider.addEventListener('input', (e) => {
 formatSelect.addEventListener('change', processCurrentImage);
 scaleSelect.addEventListener('change', processCurrentImage);
 
+if (splitSlider) {
+  splitSlider.addEventListener('input', (e) => {
+    compressedWrapper.style.width = `${e.target.value}%`;
+  });
+}
+
 function handleFiles(files) {
   const validImages = files.filter((f) => f.type.startsWith('image/'));
   if (validImages.length === 0) return;
 
   loadedFiles = validImages;
   activeIndex = 0;
+
+  if (loadedFiles.length > 1) {
+    downloadZipBtn.disabled = false;
+  }
+
   processCurrentImage();
 }
 
+function compressSingleImage(file, quality, mimeType, scale) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.src = url;
 
-function processCurrentImage() {
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      canvas.width = Math.max(1, img.width * scale);
+      canvas.height = Math.max(1, img.height * scale);
+
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob((blob) => {
+        URL.revokeObjectURL(url);
+        resolve(blob);
+      }, mimeType, quality);
+    };
+  });
+}
+
+async function processCurrentImage() {
   if (loadedFiles.length === 0) return;
 
   const file = loadedFiles[activeIndex];
@@ -69,25 +108,20 @@ function processCurrentImage() {
   const mimeType = formatSelect.value;
   const scale = parseFloat(scaleSelect.value);
 
-  const img = new Image();
-  img.src = URL.createObjectURL(file);
+  const origUrl = URL.createObjectURL(file);
+  imgOriginal.src = origUrl;
 
-  img.onload = () => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+  const blob = await compressSingleImage(file, quality, mimeType, scale);
+  compressedBlobs[activeIndex] = blob;
 
-    canvas.width = img.width * scale;
-    canvas.height = img.height * scale;
+  const compUrl = URL.createObjectURL(blob);
+  imgCompressed.src = compUrl;
 
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  if (placeholderText) placeholderText.hidden = true;
+  if (splitWrapper) splitWrapper.hidden = false;
 
-    canvas.toBlob((blob) => {
-      compressedBlobs[activeIndex] = blob;
-      updateStats(file.size, blob.size);
-      downloadSingleBtn.disabled = false;
-      URL.revokeObjectURL(img.src);
-    }, mimeType, quality);
-  };
+  updateStats(file.size, blob.size);
+  downloadSingleBtn.disabled = false;
 }
 
 function updateStats(origBytes, compBytes) {
@@ -113,6 +147,35 @@ downloadSingleBtn.addEventListener('click', () => {
   const ext = formatSelect.value.split('/')[1];
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `pic-leaner-compressed.${ext}`;
+  link.download = `pic-leaner-${Date.now()}.${ext}`;
   link.click();
+});
+
+downloadZipBtn.addEventListener('click', async () => {
+  if (loadedFiles.length === 0) return;
+
+  downloadZipBtn.disabled = true;
+  downloadZipBtn.textContent = 'Compressing ZIP...';
+
+  const zip = new JSZip();
+  const quality = parseFloat(qualitySlider.value) / 100;
+  const mimeType = formatSelect.value;
+  const scale = parseFloat(scaleSelect.value);
+  const ext = mimeType.split('/')[1];
+
+  for (let i = 0; i < loadedFiles.length; i++) {
+    const file = loadedFiles[i];
+    const blob = await compressSingleImage(file, quality, mimeType, scale);
+    const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+    zip.file(`${baseName}-compressed.${ext}`, blob);
+  }
+
+  const zipContent = await zip.generateAsync({ type: 'blob' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(zipContent);
+  link.download = `pic-leaner-batch.zip`;
+  link.click();
+
+  downloadZipBtn.disabled = false;
+  downloadZipBtn.textContent = 'Export All as ZIP';
 });
