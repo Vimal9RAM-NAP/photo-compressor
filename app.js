@@ -42,7 +42,7 @@ dropZone.addEventListener('drop', (e) => {
   }
 });
 
-// Control Listeners
+
 qualitySlider.addEventListener('input', (e) => {
   qualityVal.textContent = e.target.value;
   processCurrentImage();
