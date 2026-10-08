@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PIC Leaner - Photo Compressor</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    
+    <header class="header">
+      <div class="logo-box">
+        <span class="brand-name">PIC Leaner</span>
+      </div>
+      <div class="version-tag">v1.0.0</div>
+    </header>
+
+    
+    <main class="main-grid">
+      
+      <section class="left-col">
+        
+        <div class="card drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept="image/*" multiple hidden />
+          <div class="drop-content" id="dropContent">
+            <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+            </svg>
+            <p>Drag & Drop your images here or <span class="browse-btn">Browse</span></p>
+            <small>Supports JPEG, PNG, WebP</small>
+          </div>
+          <div class="queue-preview" id="queuePreview" hidden></div>
+        </div>
+
+      
+        <div class="card controls-card">
+          <h2>Compression Controls</h2>
+          <div class="control-group">
+            <label for="qualitySlider">Quality: <span id="qualityVal">80</span>%</label>
+            <input type="range" id="qualitySlider" min="5" max="100" value="80" />
+          </div>
+
+          <div class="control-group">
+            <label for="formatSelect">Output Format:</label>
+            <select id="formatSelect">
+              <option value="image/jpeg">JPEG</option>
+              <option value="image/webp" selected>WebP</option>
+              <option value="image/png">PNG</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="scaleSelect">Scale Dimension:</label>
+            <select id="scaleSelect">
+              <option value="1">100% (Original)</option>
+              <option value="0.75">75%</option>
+              <option value="0.5">50%</option>
+              <option value="0.25">25%</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+     
+      <section class="right-col">
+        
+        <div class="card preview-card">
+          <h2>Live Side-by-Side Preview</h2>
+          <div class="preview-stage" id="previewStage">
+            <p class="placeholder-text">Upload an image to see the comparison</p>
+            <div class="split-wrapper" id="splitWrapper" hidden>
+              <img id="imgOriginal" alt="Original" />
+              <div class="compressed-wrapper" id="compressedWrapper">
+                <img id="imgCompressed" alt="Compressed" />
+              </div>
+              <input type="range" id="splitSlider" min="0" max="100" value="50" />
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="card details-card">
+          <div class="detail-box">
+            <span class="label">Original Size</span>
+            <span class="value" id="origSize">0 KB</span>
+          </div>
+          <div class="detail-box">
+            <span class="label">Compressed Size</span>
+            <span class="value" id="compSize">0 KB</span>
+          </div>
+          <div class="detail-box highlight">
+            <span class="label">Saved</span>
+            <span class="value" id="savedRatio">0%</span>
+          </div>
+        </div>
+
+      
+        <div class="card export-card">
+          <h2>Export Pipeline</h2>
+          <div class="export-actions">
+            <button class="btn primary" id="downloadSingleBtn" disabled>Download Image</button>
+            <button class="btn secondary" id="downloadZipBtn" disabled>Export All as ZIP</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
