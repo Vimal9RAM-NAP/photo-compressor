@@ -300,7 +300,7 @@ select:focus {
 }
 
 .detail-box.highlight .value {
-  color: #f43f5e;
+  color: #11ca30;
   text-shadow: 0 0 12px rgba(244, 63, 94, 0.4);
 }
 
