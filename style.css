@@ -1,171 +1,231 @@
 :root {
-  --bg-color: #05070d;
-  --card-bg: #0b1120;
+  --bg-pitch-black: #030508;
+  --card-bg: #0a0f1d;
   --card-border: #1e293b;
-  --primary-blue: #2563eb;
-  --primary-hover: #3b82f6;
+  --card-border-glow: #1d4ed8;
+  --accent-blue: #2563eb;
   --accent-cyan: #38bdf8;
-  --text-main: #f8fafc;
+  --text-primary: #f8fafc;
   --text-muted: #94a3b8;
+  --radius: 12px;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {
-  background-color: var(--bg-color);
-  color: var(--text-main);
+  background-color: var(--bg-pitch-black);
+  color: var(--text-primary);
   min-height: 100vh;
   padding: 1.5rem;
+  display: flex;
+  justify-content: center;
 }
 
 .app-container {
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 1300px;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
 }
+
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0;
+  width: 100%;
 }
 
 .logo-box {
+  background: var(--card-bg);
   border: 1px solid var(--card-border);
   padding: 0.5rem 1.25rem;
-  border-radius: 8px;
-  background-color: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.15);
 }
 
 .brand-name {
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: var(--accent-cyan);
+  color: #ffffff;
 }
 
 .version-tag {
   color: var(--text-muted);
-  font-size: 0.875rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
 }
+
 
 .main-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
+  gap: 1rem;
+  align-items: start;
 }
 
 .left-col, .right-col {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
+  width: 100%;
 }
+
 
 .card {
   background-color: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 12px;
+  border-radius: var(--radius);
   padding: 1.25rem;
+  position: relative;
 }
 
 .card h2 {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--accent-cyan);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 
 .drop-zone {
-  border: 2px dashed #1e3a8a;
-  min-height: 240px;
+  min-height: 280px;
+  border: 2px dashed #1d4ed8;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition: all 0.2s ease;
+  background: #060b17;
 }
 
 .drop-zone:hover, .drop-zone.drag-over {
-  border-color: var(--primary-blue);
-  background-color: #0e172a;
+  border-color: var(--accent-cyan);
+  background: #0d172e;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
 }
 
 .drop-content {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .upload-icon {
-  width: 48px;
-  height: 48px;
-  color: var(--primary-blue);
-  margin-bottom: 0.75rem;
+  width: 42px;
+  height: 42px;
+  color: var(--accent-cyan);
 }
 
 .browse-btn {
   color: var(--accent-cyan);
-  text-decoration: underline;
+  font-weight: 600;
 }
 
+
+.controls-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
 .control-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 0.4rem;
 }
 
 .control-group label {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
 }
 
 input[type="range"] {
   width: 100%;
-  accent-color: var(--primary-blue);
+  accent-color: var(--accent-blue);
+  height: 6px;
+  border-radius: 3px;
+  cursor: pointer;
 }
 
 select {
-  background-color: #05070d;
-  color: var(--text-main);
+  background-color: #030508;
+  color: var(--text-primary);
   border: 1px solid var(--card-border);
   padding: 0.6rem;
   border-radius: 6px;
   outline: none;
+  font-size: 0.9rem;
+}
+
+select:focus {
+  border-color: var(--accent-blue);
+}
+
+
+.preview-card {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-stage {
+  flex: 1;
+  min-height: 200px;
+  background-color: #030508;
+  border-radius: 8px;
+  border: 1px dashed var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-text {
+  color: var(--text-muted);
+  font-size: 0.85rem;
 }
 
 
 .details-card {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  text-align: center;
+  gap: 0.75rem;
+  padding: 1rem;
 }
 
 .detail-box {
-  background: #05070d;
-  padding: 0.75rem;
-  border-radius: 8px;
+  background-color: #030508;
   border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  text-align: center;
 }
 
 .detail-box .label {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
+  text-transform: uppercase;
 }
 
 .detail-box .value {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-top: 0.25rem;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-top: 0.2rem;
+  color: #ffffff;
 }
 
 .detail-box.highlight .value {
@@ -173,9 +233,13 @@ select {
 }
 
 
+.export-card h2 {
+  margin-bottom: 0.75rem;
+}
+
 .export-actions {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .btn {
@@ -183,32 +247,39 @@ select {
   padding: 0.75rem;
   border-radius: 6px;
   border: none;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .btn.primary {
-  background-color: var(--primary-blue);
-  color: white;
+  background-color: var(--accent-blue);
+  color: #ffffff;
 }
 
 .btn.primary:hover:not(:disabled) {
-  background-color: var(--primary-hover);
+  background-color: #1d4ed8;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
 }
 
 .btn.secondary {
   background-color: transparent;
   border: 1px solid var(--card-border);
-  color: var(--text-main);
+  color: var(--text-primary);
+}
+
+.btn.secondary:hover:not(:disabled) {
+  border-color: var(--accent-blue);
 }
 
 .btn:disabled {
-  opacity: 0.4;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
-@media (max-width: 900px) {
+
+@media (max-width: 850px) {
   .main-grid {
     grid-template-columns: 1fr;
   }
